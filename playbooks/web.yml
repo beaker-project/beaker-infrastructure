@@ -1,0 +1,153 @@
+---
+
+- hosts: beaker-project.osci.io
+  vars:
+    device: /dev/vdb
+  tasks:
+    - name: "Add lvm on data disk"
+      filesystem:
+        dev: "{{ device }}"
+        fstype: lvm
+
+    # use LVM in case we need to add more storage and divide it
+    - name: "Create a volume group on data disk"
+      lvg:
+        pvs: "{{ device }}"
+        vg: "{{ data_vg_name }}"
+
+  tags: partitioning
+
+
+- hosts: beaker-project.osci.io
+  tasks:
+    - name: "Install NFS tools"
+      package:
+        name: nfs-utils
+        state: present
+
+    - name: "Mount NFS storage"
+      mount:
+        src: "lucille.srv.osci.io:/{{ inventory_hostname }}"
+        path: /srv/data
+        fstype: nfs4
+        opts: "defaults,nodev,nosuid,noatime,nodiratime,acl,x-systemd.automount"
+        state: mounted
+
+  tags: nfs
+
+
+- hosts: beaker-project.osci.io
+  vars:
+    website_domain: www.beaker-project.org
+    document_root: "/var/www/{{ website_domain }}"
+    uploader_login: beaker-web-uploader
+    uploader_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAtivtuKUWeOg5DzMtUBe6JuPzMRDhOpvhOWydXiuXxJ1tKWQoq23CxRWcelTKnsGFAHcDWvl7MGKFDQaK29MnlbF6PEXM+Rx+qSsAPSZtVHecq88zrlgoI0eDDfS7w75QkxHcFffUBNCX2d7ONTboxzFYNhVwTr08ZRRO9llvCekLKMFQha0Tco2EKSNDhyyuCsGu414JjLLdtD+JDcBSrITkz5/N7tzShq94iaVJJF5L1yV/FppT14cJIDbDX55fXB5QG/GpcXsnVt6BEotzAzrvksTVlAmmm58ZOX9zFhLEMeQh5HL8chUQS418AYy5Lq8o/n0rffYpUn5OszysRQ== jenkins@beaker-jenkins.rhev-ci-vms.eng.rdu2.redhat.com"
+    data_dir: "{{ inventory_dir }}/data/tenants/po4a/web"
+  tasks:
+    - name: "Create web storage"
+      include_role:
+        name: lvm_partition
+      vars:
+        vg: "{{ data_vg_name }}"
+        size: 100%PVS
+        lv_name: www
+        path: "/var/www/{{ website_domain }}"
+      tags: partitioning
+
+    - name: "Setup permission for web storage"
+      file:
+        path: "/var/www/{{ website_domain }}"
+        owner: "{{ uploader_login }}"
+        group: "{{ uploader_login }}"
+        mode: 0755
+        setype: httpd_sys_content_t
+
+    - name: "Install RSSH"
+      package:
+        name: rssh
+        state: installed
+
+    - name: "Add RSSH config for doc builder's user"
+      lineinfile:
+        path: /etc/rssh.conf
+        state: present
+        regexp: '^user\s+=\s+{{ uploader_login }}'
+        line: "user = {{ uploader_login }}:011:10000:"
+
+    - name: "Create uploader's user"
+      user:
+        name: "{{ uploader_login }}"
+        comment: "Website Uploader User"
+        shell: /usr/bin/rssh
+        groups:
+          - rsshusers
+
+    - name: "Install rsync for the website builder"
+      package:
+        name: rsync
+        state: installed
+
+    - name: "Install sync SSH key"
+      authorized_key:
+        key: "{{ uploader_key }}"
+        user: "{{ uploader_login }}"
+
+    - name: "Harden security for uploaders configuration"
+      file:
+        path: "~{{ uploader_login }}/.ssh/authorized_keys"
+        owner: root
+        mode: 0644
+
+    - name: "Harden security for uploaders configuration, .ssh directory"
+      file:
+        path: "~{{ uploader_login }}/.ssh/"
+        owner: root
+        mode: 0750
+        attr: i
+
+    - name: "Create vhost for {{ website_domain }}"
+      include_role:
+        name: httpd
+        tasks_from: vhost
+      vars:
+        server_aliases:
+          - beaker-project.org
+        create_document_root: False
+        # TODO: when switching to production
+        #use_letsencrypt: True
+        #force_tls: True
+        content_security_policy: "default-src 'none'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'"
+
+    - name: "Allow web index for {{ website_domain }}"
+      copy:
+        content: "<Location />\n\tOptions +Indexes\n</Location>"
+        dest: "{{ _vhost_confdir }}/free_listing.conf"
+      notify: reload httpd
+
+    - name: "Allow httpd to server files on NFS"
+      seboolean:
+        name: httpd_use_nfs
+        state: yes
+        persistent: yes
+      notify: restart httpd
+
+    - name: "Create directory for YUM archive"
+      file:
+        path: "/var/www/{{ website_domain }}/yum-archive"
+        state: directory
+        owner: "{{ uploader_login }}"
+        group: "{{ uploader_login }}"
+        mode: 0755
+        setype: httpd_sys_content_t
+
+    - name: "Use NFS storage for YUM archive"
+      include_role:
+        name: data_movebind
+      vars:
+        src: "/var/www/{{ website_domain }}/yum-archive"
+        dest: "/srv/data/yum-archive"
+        services:
+          - httpd
+
+  tags: web
+
