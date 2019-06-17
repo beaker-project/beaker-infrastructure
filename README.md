@@ -4,7 +4,7 @@
 
 Beaker is open-source software for managing and automating labs of test computers.
 
-This repository contains Ansible rules to manage the beaker infrastructure.
+This repository contains Ansible rules to manage the Beaker infrastructure.
 
 You need Ansible >=2.3 to be able to handle the (new) YAML-based 'hosts' file format.
 
@@ -34,9 +34,9 @@ Ansible is slow, but there's a nice project to improve its performance. It still
 
 First install the library (it is not yet packaged):
 
-  pip install mitogen
+`pip install mitogen`
 
 Then you just need to run playbooks this way:
 
-  ANSIBLE_STRATEGY=mitogen_linear ansible-playbook …
+`ANSIBLE_STRATEGY=mitogen_linear ansible-playbook …`
 
