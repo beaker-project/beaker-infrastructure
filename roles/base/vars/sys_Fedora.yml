@@ -1,0 +1,20 @@
+---
+rpm_repo_component: "fedora-$releasever-$basearch"
+base_tools:
+  - lvm2
+  - screen
+  - htop
+  - iftop
+  - iotop
+  - strace
+  - vim-enhanced
+  - tcpdump
+  - lsof
+  - needrestart
+  - dialog # useful for debconf and in turn needrestart
+  - mtr
+  - hping3
+  - nmap
+  - nmap-ncat
+  - fedora-upgrade
+

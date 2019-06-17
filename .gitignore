@@ -1,0 +1,28 @@
+# fact caching to save time
+facts_cache
+# created by Ansible in case of failure
+*.retry
+# playbook logs
+*.log
+# local admin settings
+# (ansible_become_pass for eg, provided your machine's storage is encrypted)
+group_vars/all/local_settings.yml
+# Python optimized files
+*.pyo
+*.pyc
+__pycache__
+# handled via ansible-roles-ctl or ansible-galaxy
+roles/selinux
+roles/openssh
+roles/tor
+roles/guest_virt_tools
+roles/entropy
+roles/postfix
+roles/postgrey
+roles/spamassassin
+roles/unattended_updates
+roles/httpd
+roles/chrony
+roles/data_movebind
+roles/swap_file
+roles/lvm_partition

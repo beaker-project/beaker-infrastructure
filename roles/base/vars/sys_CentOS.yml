@@ -1,0 +1,21 @@
+---
+rpm_repo_component: "epel-{{ ansible_distribution_major_version }}-$basearch"
+base_tools:
+  - lvm2
+  # needed for yum-complete-transaction
+  - yum-utils
+  - screen
+  - htop
+  - iftop
+  - iotop
+  - strace
+  - vim-enhanced
+  - tcpdump
+  - lsof
+  - needrestart
+  - dialog # useful for debconf and in turn needrestart
+  - mtr
+  - hping3
+  - nmap
+  - nmap-ncat
+

@@ -1,0 +1,19 @@
+---
+base_tools:
+  - lvm2
+  - screen
+  - htop
+  - iftop
+  - iotop
+  - strace
+  - vim
+  - tcpdump
+  - lsof
+  - needrestart
+  - firewalld
+  - sudo
+  - mtr-tiny
+  - hping3
+  - nmap
+  - netcat-traditional
+
