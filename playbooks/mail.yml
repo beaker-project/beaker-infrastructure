@@ -1,0 +1,33 @@
+---
+
+- hosts: beaker-project.osci.io
+  tasks:
+    - name: "Install Postgrey"
+      include_role:
+        name: postgrey
+      vars:
+        whitelist_clients:
+          - redhat.com
+
+    - name: "Install SpamAssassin"
+      include_role:
+        name: spamassassin
+      vars:
+        service_profile: low
+
+    - name: "Install MTA"
+      include_role:
+        name: postfix
+      vars:
+        myhostname: mail.beaker-project.org
+        relay_domains:
+          - beaker-project.org
+        with_postgrey: true
+        with_spamassassin: true
+        aliases:
+          root: "{{ ['root'] + infra_error_emails }}"
+          #listmaster: root
+          developers: "{{ dev_emails }}"
+
+  tags: mail
+
