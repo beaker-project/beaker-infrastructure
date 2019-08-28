@@ -1,0 +1,1 @@
+{{ rpmimport_login }}   ALL=({{ uploader_login }})   NOPASSWD: /usr/local/bin/rpm_import.sh
