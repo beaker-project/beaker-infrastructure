@@ -1,25 +1,31 @@
-image: python:3-stretch
+---
+language: none
 
-variables:
-  DEBIAN_FRONTEND: noninteractive
-  LANG: en_US.UTF-8
-  LANGUAGE: en_US:en
-  LC_ALL: en_US.UTF-8
-  ANSIBLE_FORCE_COLOR: 'true'
+env:
+  global:
+    - DEBIAN_FRONTEND=noninteractive
+    - LANG=en_US.UTF-8
+    - LANGUAGE=en_US:en
+    - LC_ALL=en_US.UTF-8
+    - ANSIBLE_FORCE_COLOR='true'
 
-before_script:
-  - apt-get update
-  - apt-get install -y locales
-  - echo "${LANG} UTF-8" > /etc/locale.gen
-  - locale-gen ${LANG}
-  - apt-get install -y python3-pip
-  - pip3 install ansible
-  - pip3 install flake8
-  - pip3 install ansible-lint
-
-ansible-test:
-  stage: test
-  script:
+build:
+  pre_ci:
+  pre_ci_boot:
+    image_name: ubuntu
+    image_tag: rolling
+    pull: true
+    # we need a terminal or certain libc functions will fail
+    options: "-ti"
+  ci:
+    - apt-get update
+    - apt-get install -y locales
+    - echo "${LANG} UTF-8" > /etc/locale.gen
+    - locale-gen ${LANG}
+    - apt-get install -y python3-pip
+    - pip3 install ansible
+    - pip3 install flake8
+    - pip3 install ansible-lint
     # to avoid this problem:
     #  [WARNING] Ansible is in a world writable directory (…), ignoring it as an ansible.cfg source.
     - chmod 0755 .
@@ -34,4 +40,13 @@ ansible-test:
     # TODO: work on E405, this might take time to improve all code and roles
     - ansible-lint -p --nocolor $(echo ${EXT_ROLES_DIRS} | sed -r 's/\./--exclude=\./g') -x 204,405,602,702 playbooks/*.yml
     - find playbooks/ -maxdepth 1 -name '*.yml' | xargs -n 1 ansible-playbook --syntax-check
+
+integrations:
+  notifications:
+    - integrationName: email
+      type: email
+      on_success: never
+      on_failure: never
+      on_start: never
+      on_pull_request: never
 
