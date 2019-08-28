@@ -42,7 +42,9 @@
     document_root: "/var/www/{{ website_domain }}"
     uploader_login: beaker-web-uploader
     uploader_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAtivtuKUWeOg5DzMtUBe6JuPzMRDhOpvhOWydXiuXxJ1tKWQoq23CxRWcelTKnsGFAHcDWvl7MGKFDQaK29MnlbF6PEXM+Rx+qSsAPSZtVHecq88zrlgoI0eDDfS7w75QkxHcFffUBNCX2d7ONTboxzFYNhVwTr08ZRRO9llvCekLKMFQha0Tco2EKSNDhyyuCsGu414JjLLdtD+JDcBSrITkz5/N7tzShq94iaVJJF5L1yV/FppT14cJIDbDX55fXB5QG/GpcXsnVt6BEotzAzrvksTVlAmmm58ZOX9zFhLEMeQh5HL8chUQS418AYy5Lq8o/n0rffYpUn5OszysRQ== jenkins@beaker-jenkins.rhev-ci-vms.eng.rdu2.redhat.com"
-    data_dir: "{{ inventory_dir }}/data/tenants/po4a/web"
+    rpmimport_login: "beaker-web-rpmimport"
+    rpmimport_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFHE3pISHaHS9PGkz7BnoBSYRwfNPz8ehyDHqsI7kCv6sqBElKHhagmrVvvKCM60pYAgJSxi2Du0cj55rfn0MyveO+Sc+trn7GhvaZiCcQU6Xb7lGgRF3p56WWu1aSI5C3pdSEjZIGGi9Ooo807v7B/FsFwJeGzxjjaiNNIlCEy6gBrVyn72FjPkrwLAymYzM8eh+3Jy5/5hllJ3OXnCSkzSEJ9Yi19/UbYVps2yEoP4rJxbY0zXphDPfFY6XR1yzWK2O8eZmWtYxd8D820yjZbTP4dcj1w/qm2NKWpAi2Mts372IxIs6c/kKv8gAmwh5RWlEuHiOL+o6cEJpmXMWn jenkins@beaker-jenkins.rhev-ci-vms.eng.rdu2.redhat.com"
+    data_dir: "{{ inventory_dir }}/data/web"
   tasks:
     - name: "Create web storage"
       include_role:
@@ -104,6 +106,39 @@
         owner: root
         mode: 0750
         attr: i
+
+    - name: "Install RPM Import script"
+      template:
+        src: "{{ data_dir }}/rpm_import.sh"
+        dest: /usr/local/bin/
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: "Install RPM Import script dependencies"
+      package:
+        name: createrepo_c
+        state: installed
+
+    - name: "Create RPM Import script's user"
+      user:
+        name: "{{ rpmimport_login }}"
+        comment: "Website RPM Import script User"
+
+    - name: "Install SSH key for RPM Import user"
+      authorized_key:
+          key: "{{ rpmimport_key }}"
+          key_options: "command=\"sudo -H -u {{ uploader_login }} /usr/local/bin/rpm_import.sh\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding"
+          user: "{{ rpmimport_login }}"
+
+    - name: "Allow sudo for RPM Import script"
+      template:
+        src: "{{ data_dir }}/rpm_import.sudo"
+        dest: /etc/sudoers.d/rpm_import
+        owner: root
+        group: root
+        mode: 0440
+        validate: "visudo -cf %s"
 
     - name: "Create vhost for {{ website_domain }}"
       include_role:
