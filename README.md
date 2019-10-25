@@ -6,7 +6,10 @@ Beaker is open-source software for managing and automating labs of test computer
 
 This repository contains Ansible rules to manage the Beaker infrastructure.
 
-You need Ansible >=2.3 to be able to handle the (new) YAML-based 'hosts' file format.
+You need `Ansible >=2.3` to be able to handle the (new) YAML-based 'hosts' file format.
+
+However, we strongly recommend using `Ansible >= 2.7.5`. You can install all
+necessary requirements via command `pip install -r requirements.txt`.
 
 ## Admin-specific Production Settings
 
@@ -30,7 +33,8 @@ This is very easy, look at this URL for more info:
 
 ## Improving Ansible Speed
 
-Ansible is slow, but there's a nice project to improve its performance. It still has glitches so it's not enabled by default, but it's easy to enable it.
+Ansible is slow, but there's a nice project to improve its performance.
+It still has glitches so it's not enabled by default, but it's easy to enable it.
 
 First install the library (it is not yet packaged):
 
