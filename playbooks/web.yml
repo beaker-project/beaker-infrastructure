@@ -148,9 +148,8 @@
         server_aliases:
           - beaker-project.org
         create_document_root: False
-        # TODO: when switching to production
-        #use_letsencrypt: True
-        #force_tls: True
+        use_letsencrypt: True
+        force_tls: True
         content_security_policy: "default-src 'none'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'"
 
     - name: "Allow web index for {{ website_domain }}"
