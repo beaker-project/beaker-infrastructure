@@ -147,6 +147,7 @@
       vars:
         server_aliases:
           - beaker-project.org
+          - beaker-project.osci.io
         create_document_root: False
         use_letsencrypt: True
         force_tls: True
