@@ -190,5 +190,19 @@
         services:
           - httpd
 
+    - name: "Generate Artifacts Expiration Script"
+      template:
+        src: "{{ data_dir }}/artifacts_expire.sh"
+        dest: /usr/local/sbin/
+        mode: 0755
+
+    - name: "Add crontab for Artifacts Expiration"
+      cron:
+        cron_file: artifacts-expiration
+        name: "Artifacts expiration"
+        user: root
+        special_time: daily
+        job: "/usr/local/sbin/artifacts_expire.sh"
+
   tags: web
 
