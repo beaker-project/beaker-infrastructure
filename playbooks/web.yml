@@ -151,9 +151,8 @@
         create_document_root: False
         use_letsencrypt: True
         force_tls: True
-        # TODO: rework GCSE search to avoid unsafe-inline
         # Google search requires unsafe-eval
-        content_security_policy: "default-src 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.google.com/cse/ https://www.googleapis.com https://clients1.google.com/generate_204; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://www.google.com/cse/; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/jsapi https://cse.google.com https://www.google.com/cse/"
+        content_security_policy: "default-src 'none'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.google.com/cse/ https://www.googleapis.com https://clients1.google.com/generate_204; style-src 'self' https://fonts.googleapis.com/ https://www.google.com/cse/; script-src 'self' 'unsafe-eval' https://www.google.com/jsapi https://cse.google.com https://www.google.com/cse/"
         redirects:
           - src: '^/schema/beaker-job\.rng$'
             target: '/docs/_downloads/beaker-job.rng'
