@@ -162,6 +162,9 @@
       copy:
         content: "<Location />\n\tOptions +Indexes\n</Location>"
         dest: "{{ _vhost_confdir }}/free_listing.conf"
+        owner: root
+        group: root
+        mode: 0644
       notify: reload httpd
 
     - name: "Allow httpd to server files on NFS"
