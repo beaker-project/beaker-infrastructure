@@ -127,9 +127,9 @@
 
     - name: "Install SSH key for RPM Import user"
       authorized_key:
-          key: "{{ rpmimport_key }}"
-          key_options: "command=\"sudo -H -u {{ uploader_login }} /usr/local/bin/rpm_import.sh\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding"
-          user: "{{ rpmimport_login }}"
+        key: "{{ rpmimport_key }}"
+        key_options: "command=\"sudo -H -u {{ uploader_login }} /usr/local/bin/rpm_import.sh\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding"
+        user: "{{ rpmimport_login }}"
 
     - name: "Allow sudo for RPM Import script"
       template:
