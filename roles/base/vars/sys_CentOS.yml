@@ -13,7 +13,7 @@ base_tools:
   - tcpdump
   - lsof
   - needrestart
-  - dialog # useful for debconf and in turn needrestart
+  - dialog   # useful for debconf and in turn needrestart
   - mtr
   - hping3
   - nmap
