@@ -38,7 +38,7 @@ jobs:
       # checks before external roles
       - name: Test with flake8
         run: |
-          flake8 --exclude=plugins/strategy/mitogen_linear.py --ignore=E126,E131,E302,E303,E501,W391 .
+          flake8 --exclude=plugins/strategy/mitogen_linear.py .
       - name: Install Ansible roles
         run: |
           ansible-galaxy install -r requirements.yml
