@@ -33,9 +33,13 @@ jobs:
       - name: Show environment
         run: |
           ansible --version
+          yamllint --version
           flake8 --version
           ansible-lint --version
       # checks before external roles
+      - name: Test with yamllint
+        run: |
+          yamllint .
       - name: Test with flake8
         run: |
           flake8 --exclude=plugins/strategy/mitogen_linear.py .
