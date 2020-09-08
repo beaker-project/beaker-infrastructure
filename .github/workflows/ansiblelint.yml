@@ -35,6 +35,10 @@ jobs:
           ansible --version
           flake8 --version
           ansible-lint --version
+      # checks before external roles
+      - name: Test with flake8
+        run: |
+          flake8 --exclude=plugins/strategy/mitogen_linear.py --ignore=E126,E131,E302,E303,E501,W391 .
       - name: Install Ansible roles
         run: |
           ansible-galaxy install -r requirements.yml
@@ -42,9 +46,7 @@ jobs:
       - name: Remove secrets
         run: |
           find . -name '*.vault.*' -delete
-      - name: Test with flake8
-        run: |
-          flake8 --exclude=plugins/strategy/mitogen_linear.py,${EXT_ROLES_DIRS} --ignore=E126,E131,E302,E303,E501,W391 .
+      # checks after external roles
       - name: Run Ansible lint
         run: |
           ansible-lint -p --nocolor $(echo ${EXT_ROLES_DIRS} | tr ',' ' ' |sed -r 's/\./--exclude=\./g') -x 204 playbooks/*.yml
