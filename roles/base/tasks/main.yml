@@ -16,6 +16,7 @@
 - name: Manage DNS Settings
   block:
     - name: Tell NM to not care about DNS Settings
+      # noqa risky-file-permissions
       ini_file:
         path: /etc/NetworkManager/NetworkManager.conf
         section: main
@@ -78,7 +79,8 @@
   notify: Clean YUM Metadata
 
 # after all repos are setup and before installing packages
-- meta: flush_handlers
+- name: "Flush Handlers to Update Package Cache"
+  meta: flush_handlers
 
 - name: install base tools
   package:
