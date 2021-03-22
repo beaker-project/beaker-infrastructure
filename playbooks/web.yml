@@ -160,6 +160,7 @@
             match: True
 
     - name: "Allow web index for {{ website_domain }}"
+      # noqa no-tabs
       copy:
         content: "<Location />\n\tOptions +Indexes\n</Location>"
         dest: "{{ _vhost_confdir }}/free_listing.conf"
