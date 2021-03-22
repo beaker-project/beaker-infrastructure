@@ -45,7 +45,7 @@ jobs:
           flake8 --exclude=plugins/strategy/mitogen_linear.py .
       - name: Run Ansible lint
         run: |
-          ansible-lint -p --nocolor -x 204 playbooks/*.yml
+          ansible-lint -p --nocolor playbooks
       - name: Install Ansible roles
         run: |
           ansible-galaxy install -r requirements.yml
