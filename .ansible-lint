@@ -16,6 +16,9 @@ skip_list:
   # https://github.com/ansible/ansible/pull/51030
   - empty-string-compare
   - meta-no-tags
+  # let's wait for a better collections resolution configuration
+  # (see https://github.com/ansible/ansible/issues/68457#issuecomment-613697236)
+  - fqcn-builtins
 
 # offline mode disables installation of requirements.yml
 offline: true
