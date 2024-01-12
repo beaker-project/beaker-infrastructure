@@ -10,6 +10,7 @@ ignore: |
   # cannot handle jinja2 syntax
   roles/*/templates/*.yml
   data/tenants/osci/shared_services_params/ansible/osci_zone/services.yml
+  collections/ansible_collections/kubernetes/core
 
 rules:
   braces:
