@@ -1,30 +1,28 @@
 ---
-- src: git+https://github.com/OSAS/ansible-role-selinux.git
+- src: git+https://gitlab.com/osci/ansible-role-selinux.git
   name: selinux
-- src: git+https://github.com/OSAS/ansible-role-openssh.git
+- src: git+https://gitlab.com/osci/ansible-role-openssh.git
   name: openssh
-- src: git+https://gitlab.com/osas/ansible-role-tor.git
-  name: tor
-- src: git+https://gitlab.com/osas/ansible-role-entropy.git
+- src: git+https://gitlab.com/osci/ansible-role-entropy.git
   name: entropy
-- src: git+https://gitlab.com/osas/ansible-role-guest_virt_tools.git
+- src: git+https://gitlab.com/osci/ansible-role-guest_virt_tools.git
   name: guest_virt_tools
-- src: git+https://gitlab.com/osas/ansible-role-postfix.git
+- src: git+https://gitlab.com/osci/ansible-role-postfix.git
   name: postfix
-- src: git+https://gitlab.com/osas/ansible-role-postgrey.git
+- src: git+https://gitlab.com/osci/ansible-role-postgrey.git
   name: postgrey
-- src: git+https://gitlab.com/osas/ansible-role-spamassassin.git
+- src: git+https://gitlab.com/osci/ansible-role-spamassassin.git
   name: spamassassin
-- src: git+https://gitlab.com/osas/ansible-role-unattended_updates.git
+- src: git+https://gitlab.com/osci/ansible-role-unattended_updates.git
   name: unattended_updates
-- src: git+https://gitlab.com/osas/ansible-role-ah-httpd.git
+- src: git+https://gitlab.com/osci/ansible-role-ah-httpd.git
   name: httpd
-- src: git+https://gitlab.com/osas/ansible-role-chrony.git
+- src: git+https://gitlab.com/osci/ansible-role-chrony.git
   name: chrony
-- src: git+https://gitlab.com/osas/ansible-role-data_movebind.git
+- src: git+https://gitlab.com/osci/ansible-role-data_movebind.git
   name: data_movebind
-- src: https://github.com/OSAS/ansible-role-swap_file
+- src: git+https://gitlab.com/osci/ansible-role-swap_file.git
   name: swap_file
-- src: git+https://gitlab.com/OSAS/ansible-role-lvm_partition.git
+- src: git+https://gitlab.com/osci/ansible-role-lvm_partition.git
   name: lvm_partition
 
