@@ -6,13 +6,13 @@
     device: /dev/vdb
   tasks:
     - name: "Add lvm on data disk"
-      filesystem:
+      community.general.filesystem:
         dev: "{{ device }}"
         fstype: lvm
 
     # use LVM in case we need to add more storage and divide it
     - name: "Create a volume group on data disk"
-      lvg:
+      community.general.lvg:
         pvs: "{{ device }}"
         vg: "{{ data_vg_name }}"
 
@@ -28,7 +28,7 @@
         state: present
 
     - name: "Mount NFS storage"
-      mount:
+      ansible.posix.mount:
         src: "lucille.srv.osci.io:/{{ inventory_hostname }}"
         path: /srv/data
         fstype: nfs4
@@ -93,7 +93,7 @@
         state: installed
 
     - name: "Install sync SSH key"
-      authorized_key:
+      ansible.posix.authorized_key:
         key: "{{ uploader_key }}"
         user: "{{ uploader_login }}"
 
@@ -129,7 +129,7 @@
         comment: "Website RPM Import script User"
 
     - name: "Install SSH key for RPM Import user"
-      authorized_key:
+      ansible.posix.authorized_key:
         key: "{{ rpmimport_key }}"
         key_options: "command=\"sudo -H -u {{ uploader_login }} /usr/local/bin/rpm_import.sh\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding"
         user: "{{ rpmimport_login }}"
@@ -173,7 +173,7 @@
       notify: reload httpd
 
     - name: "Allow httpd to server files on NFS"
-      seboolean:
+      ansible.posix.seboolean:
         name: httpd_use_nfs
         state: yes
         persistent: yes

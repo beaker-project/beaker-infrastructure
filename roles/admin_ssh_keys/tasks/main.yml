@@ -1,13 +1,13 @@
 ---
 
 - name: "Install root ssh keys"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: root
     key: "{{ item }}"
   loop: "{{ ssh.used_keys }}"
 
 - name: "Remove old root ssh keys"
-  authorized_key:
+  ansible.posix.authorized_key:
     user: root
     key: "{{ item }}"
     state: absent
