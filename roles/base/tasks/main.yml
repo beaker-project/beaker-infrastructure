@@ -8,8 +8,6 @@
 
 - name: Disable fingerprint auth
   command: "authconfig --disablefingerprint --update"
-  args:
-    warn: False
   changed_when: True
   when: ansible_os_family == 'RedHat'
 
