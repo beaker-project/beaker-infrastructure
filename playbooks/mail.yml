@@ -1,6 +1,7 @@
 ---
 
-- hosts: beaker-project.osci.io
+- name: "Deploy Mail Services"
+  hosts: beaker-project.osci.io
   tasks:
     - name: "Install Postgrey"
       include_role:
