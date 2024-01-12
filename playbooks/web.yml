@@ -1,6 +1,7 @@
 ---
 
-- hosts: beaker-project.osci.io
+- name: "Prepare data storage"
+  hosts: beaker-project.osci.io
   vars:
     device: /dev/vdb
   tasks:
@@ -18,7 +19,8 @@
   tags: partitioning
 
 
-- hosts: beaker-project.osci.io
+- name: "Prepare NFS storage"
+  hosts: beaker-project.osci.io
   tasks:
     - name: "Install NFS tools"
       package:
@@ -36,7 +38,8 @@
   tags: nfs
 
 
-- hosts: beaker-project.osci.io
+- name: "Deploy web services and artifacts upload area"
+  hosts: beaker-project.osci.io
   vars:
     website_domain: www.beaker-project.org
     document_root: "/var/www/{{ website_domain }}"
