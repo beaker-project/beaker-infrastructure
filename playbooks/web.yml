@@ -59,14 +59,6 @@
         path: "/var/www/{{ website_domain }}"
       tags: partitioning
 
-    - name: "Setup permission for web storage"
-      file:
-        path: "/var/www/{{ website_domain }}"
-        owner: "{{ uploader_login }}"
-        group: "{{ uploader_login }}"
-        mode: 0755
-        setype: httpd_sys_content_t
-
     - name: "Install RSSH"
       package:
         name: rssh
@@ -86,6 +78,14 @@
         shell: /usr/bin/rssh
         groups:
           - rsshusers
+
+    - name: "Setup permission for web storage"
+      file:
+        path: "/var/www/{{ website_domain }}"
+        owner: "{{ uploader_login }}"
+        group: "{{ uploader_login }}"
+        mode: 0755
+        setype: httpd_sys_content_t
 
     - name: "Install rsync for the website builder"
       package:
