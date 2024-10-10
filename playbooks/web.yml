@@ -59,25 +59,10 @@
         path: "/var/www/{{ website_domain }}"
       tags: partitioning
 
-    - name: "Install RSSH"
-      package:
-        name: rssh
-        state: installed
-
-    - name: "Add RSSH config for doc builder's user"
-      lineinfile:
-        path: /etc/rssh.conf
-        state: present
-        regexp: '^user\s+=\s+{{ uploader_login }}'
-        line: "user = {{ uploader_login }}:011:10000:"
-
     - name: "Create uploader's user"
       user:
         name: "{{ uploader_login }}"
         comment: "Website Uploader User"
-        shell: /usr/bin/rssh
-        groups:
-          - rsshusers
 
     - name: "Setup permission for web storage"
       file:
@@ -96,6 +81,8 @@
       ansible.posix.authorized_key:
         key: "{{ uploader_key }}"
         user: "{{ uploader_login }}"
+        key_options: "command=\"rsync --server -vlogtrze.isf --omit-dir-times . /var/www/{{ website_domain }}\",no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty"
+
 
     - name: "Harden security for uploaders configuration"
       file:
