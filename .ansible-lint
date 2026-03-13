@@ -3,9 +3,7 @@ exclude_paths:
   - .git
   - __pycache__
   - .venv
-  - collections/ansible_collections/kubernetes/core
-
-parseable: true
+  - collections/ansible_collections
 
 skip_list:
   - package-latest
