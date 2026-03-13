@@ -69,7 +69,7 @@
         path: "/var/www/{{ website_domain }}"
         owner: "{{ uploader_login }}"
         group: "{{ uploader_login }}"
-        mode: 0755
+        mode: "0755"
         setype: httpd_sys_content_t
 
     - name: "Install rsync for the website builder"
@@ -88,13 +88,13 @@
       file:
         path: "~{{ uploader_login }}/.ssh/authorized_keys"
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: "Harden security for uploaders configuration, .ssh directory"
       file:
         path: "~{{ uploader_login }}/.ssh/"
         owner: root
-        mode: 0750
+        mode: "0750"
         attr: i
 
     - name: "Install RPM Import script"
@@ -103,7 +103,7 @@
         dest: /usr/local/bin/
         owner: root
         group: root
-        mode: 0755
+        mode: "0755"
 
     - name: "Install RPM Import script dependencies"
       package:
@@ -127,7 +127,7 @@
         dest: /etc/sudoers.d/rpm_import
         owner: root
         group: root
-        mode: 0440
+        mode: "0440"
         validate: "visudo -cf %s"
 
     - name: "Create vhost for {{ website_domain }}"
@@ -156,7 +156,7 @@
         dest: "{{ _vhost_confdir }}/free_listing.conf"
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
       notify: reload httpd
 
     - name: "Allow httpd to server files on NFS"
@@ -172,7 +172,7 @@
         state: directory
         owner: "{{ uploader_login }}"
         group: "{{ uploader_login }}"
-        mode: 0755
+        mode: "0755"
         setype: httpd_sys_content_t
 
     - name: "Use NFS storage for YUM archive"
@@ -188,7 +188,7 @@
       template:
         src: "{{ data_dir }}/artifacts_expire.sh"
         dest: /usr/local/sbin/
-        mode: 0755
+        mode: "0755"
 
     - name: "Add crontab for Artifacts Expiration"
       cron:
