@@ -1,4 +1,4 @@
-ansible>=2.7.5
+ansible-core>=2.20
 yamllint
 flake8
-ansible-lint
+ansible-lint>=26.3
