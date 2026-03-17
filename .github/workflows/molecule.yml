@@ -40,3 +40,4 @@ jobs:
           molecule test
         env:
           ANSIBLE_FORCE_COLOR: 'true'
+          ANSIBLE_CONFIG: ${{ github.workspace }}/ansible.cfg
