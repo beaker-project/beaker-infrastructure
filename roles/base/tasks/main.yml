@@ -106,23 +106,6 @@
     group: root
     mode: "0644"
 
-- name: Ensure removing packages also remove their unused dependencies
-  block:
-    - name: Install YUM plugin to remove leaf packages
-      ansible.builtin.package:
-        pkg: yum-plugin-remove-with-leaves
-        state: present
-    - name: Ensure the YUM plugin do its job always but safely
-      ansible.builtin.copy:
-        # there is not database of voluntarily installed packages, so it can't be perfect
-        # activate all the time but use 'exclude_bin' to avoid being too zealous
-        content: "[main]\nenabled = 1\nexclude_bin = 1\nremove_always = 1"
-        dest: /etc/yum/pluginconf.d/remove-with-leaves.conf
-        owner: root
-        group: root
-        mode: "0644"
-  when: ansible_pkg_mgr == "yum"
-
 - name: Test if the host is an AWS instance
   ansible.builtin.stat:
     path: /etc/cloud/cloud.cfg.d
