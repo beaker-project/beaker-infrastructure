@@ -1,0 +1,103 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Check that EPEL is installed
+      ansible.builtin.package:
+        name: epel-release
+        state: present
+      check_mode: true
+      register: epel_check
+      failed_when: epel_check.changed
+
+    - name: Check that OSAS Infra repo is configured
+      ansible.builtin.stat:
+        path: /etc/yum.repos.d/osas_infra.repo
+      register: repo_file
+
+    - name: Verify OSAS Infra repo exists
+      ansible.builtin.assert:
+        that:
+          - repo_file.stat.exists
+
+    - name: Check that OSAS Infra devel repo is configured
+      ansible.builtin.stat:
+        path: /etc/yum.repos.d/osas_infra_devel.repo
+      register: repo_devel_file
+
+    - name: Verify OSAS Infra devel repo exists
+      ansible.builtin.assert:
+        that:
+          - repo_devel_file.stat.exists
+
+    - name: Check CRB repo is enabled
+      ansible.builtin.command: dnf repolist --enabled
+      register: repolist
+      changed_when: false
+
+    - name: Verify CRB repo is in enabled list
+      ansible.builtin.assert:
+        that:
+          - "'crb' in repolist.stdout"
+
+    - name: Check that base tools are installed
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      check_mode: true
+      register: pkg_check
+      failed_when: pkg_check.changed
+      loop:
+        - lvm2
+        - yum-utils
+        - screen
+        - htop
+        - iftop
+        - iotop
+        - strace
+        - vim-enhanced
+        - tcpdump
+        - lsof
+        - needrestart
+        - dialog
+        - mtr
+        - hping3
+        - nmap
+        - nmap-ncat
+
+    - name: Check that needrestart config is deployed
+      ansible.builtin.stat:
+        path: /etc/needrestart/conf.d/50_osas.conf
+      register: needrestart_conf
+
+    - name: Verify needrestart config exists
+      ansible.builtin.assert:
+        that:
+          - needrestart_conf.stat.exists
+
+    - name: Check that firewalld is installed
+      ansible.builtin.package:
+        name: firewalld
+        state: present
+      check_mode: true
+      register: firewalld_check
+      failed_when: firewalld_check.changed
+
+    - name: Check that firewalld service is running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+      check_mode: true
+      register: firewalld_svc
+      failed_when: firewalld_svc.changed
+
+    - name: Check that kernel module firewall config is deployed
+      ansible.builtin.stat:
+        path: /etc/modprobe.d/firewall_kmod.conf
+      register: kmod_conf
+
+    - name: Verify kernel module firewall config exists
+      ansible.builtin.assert:
+        that:
+          - kmod_conf.stat.exists

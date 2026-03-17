@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    playbook_test_mode: true
+  roles:
+    - role: base
