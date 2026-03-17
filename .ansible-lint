@@ -18,11 +18,7 @@ skip_list:
   # let's wait for a better collections resolution configuration
   - fqcn[action-core]
   - fqcn[action]
-  # pedantic/useless
-  - name[casing]
-  - name[template]
   - key-order[task]
-  - no-changed-when
   # TODO: would be safer to work on this
   #   (experienced conflicts when running chained plays in complex setups)
   - var-naming[no-role-prefix]

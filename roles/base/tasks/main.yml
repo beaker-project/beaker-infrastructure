@@ -39,7 +39,7 @@
   tags: dns
 
 # do not merge with next item, since epel need to be installed first
-- name: install Epel
+- name: Install Epel
   package:
     pkg: epel-release
     state: present
@@ -47,7 +47,7 @@
 
 # cannot use 'yum copr' as yum-plugin-copr is missing on CentOS despite Copr's doc
 # also there is no Ansible module for it
-- name: setup the OSAS Infra repo
+- name: Setup the OSAS Infra repo
   yum_repository:
     name: osas_infra
     description: Copr repo for OSAS ComInfra Team
@@ -62,7 +62,7 @@
   notify: Clean YUM Metadata
 
 # allow for testing on selected machines
-- name: setup the OSAS Infra repo
+- name: Setup the OSAS Infra devel repo
   yum_repository:
     name: osas_infra_devel
     description: Copr repo for OSAS ComInfra Team
@@ -91,7 +91,7 @@
 - name: "Flush Handlers to Update Package Cache"
   meta: flush_handlers
 
-- name: install base tools
+- name: Install base tools
   package:
     pkg: "{{ item }}"
     state: present
@@ -139,17 +139,17 @@
 
 - name: "Prepare firewall"
   block:
-    - name: install firewalld if available
+    - name: Install firewalld if available
       package:
         pkg: firewalld
         state: present
-    - name: work around cloud image who disable firewalld
+    - name: Work around cloud image who disable firewalld
       systemd:
         name: firewalld
         masked: no
         enabled: yes   # one of 'state' or 'enabled' is compulsory
       when: ansible_distribution == 'Fedora'
-    - name: start firewalld service
+    - name: Start firewalld service
       service:
         name: firewalld
         state: started

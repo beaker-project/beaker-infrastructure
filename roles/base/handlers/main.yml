@@ -2,4 +2,5 @@
 
 - name: Clean YUM Metadata
   command: yum clean metadata
+  changed_when: true
 
