@@ -6,11 +6,6 @@
     - "sys_{{ ansible_distribution }}.yml"
     - "sys_{{ ansible_os_family }}.yml"
 
-- name: Disable fingerprint auth
-  ansible.builtin.command: "authconfig --disablefingerprint --update"
-  changed_when: True
-  when: (ansible_distribution == 'Fedora' and ansible_distribution_major_version|int < 28) or (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 7)
-
 - name: Manage DNS Settings
   block:
     - name: Tell NM to not care about DNS Settings
