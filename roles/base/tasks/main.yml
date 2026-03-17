@@ -142,7 +142,7 @@
     - name: install firewalld if available
       package:
         pkg: firewalld
-        state: installed
+        state: present
     - name: work around cloud image who disable firewalld
       systemd:
         name: firewalld

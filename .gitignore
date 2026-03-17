@@ -12,7 +12,7 @@ group_vars/all/local_settings.yml
 *.pyo
 *.pyc
 __pycache__
-# handled via ansible-roles-ctl or ansible-galaxy
+# external roles installed via ansible-galaxy
 roles/selinux
 roles/openssh
 roles/tor

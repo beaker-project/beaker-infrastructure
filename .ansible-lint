@@ -4,6 +4,7 @@ exclude_paths:
   - __pycache__
   - .venv
   - collections/ansible_collections
+  - .external_roles
 
 skip_list:
   - package-latest
@@ -13,23 +14,11 @@ skip_list:
   # and happens to check item.changed, which cannot be converted in to
   # a handler, this rule is not clever enough to understand
   - no-handler
-  # https://github.com/ansible/ansible-lint/issues/457
-  # https://github.com/ansible/ansible/pull/51030
-  - empty-string-compare
   - meta-no-tags
   # let's wait for a better collections resolution configuration
-  # (see https://github.com/ansible/ansible/issues/68457#issuecomment-613697236)
-  - fqcn-builtins
-  # this seems to flag incorrect stuff:
-  # https://github.com/ansible/ansible-lint/issues/2208
-  # https://github.com/ansible/ansible-lint/issues/2209
-  - var-spacing
-  # temporary blocked so code can be merged
-  - jinja[invalid]
-  - experimental
-  # https://github.com/ansible/ansible-lint/issues/2501
-  - template-instead-of-copy
-  # pedandic/useless
+  - fqcn[action-core]
+  - fqcn[action]
+  # pedantic/useless
   - name[casing]
   - name[template]
   - key-order[task]

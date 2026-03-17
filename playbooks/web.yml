@@ -75,7 +75,7 @@
     - name: "Install rsync for the website builder"
       package:
         name: rsync
-        state: installed
+        state: present
 
     - name: "Install sync SSH key"
       ansible.posix.authorized_key:
@@ -108,7 +108,7 @@
     - name: "Install RPM Import script dependencies"
       package:
         name: createrepo_c
-        state: installed
+        state: present
 
     - name: "Create RPM Import script's user"
       user:

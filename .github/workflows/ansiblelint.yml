@@ -18,17 +18,16 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: [3.11]
+        python-version: ['3.12', '3.13', '3.14']
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          # pip has issue
-          #python -m pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Show environment
         run: |
@@ -42,14 +41,14 @@ jobs:
           yamllint .
       - name: Test with flake8
         run: |
-          flake8 --exclude=plugins/strategy/mitogen_linear.py .
-      - name: Install Ansible roles
+          flake8 .
+      - name: Install Ansible collections and roles
         run: |
-          ansible-galaxy install -r requirements.yml
+          ansible-galaxy collection install -r requirements.yml
+          ansible-galaxy role install -r requirements.yml -p .external_roles
       - name: Run Ansible lint
         run: |
-          export EXT_ROLES_DIRS=$(find . -mindepth 2 -name ".galaxy_install_info" -printf "%h " | xargs -n 1 dirname)
-          ansible-lint -p --nocolor $(echo ${EXT_ROLES_DIRS} | sed -r 's/\./--exclude=\./g') playbooks
+          ansible-lint playbooks
       - name: Remove secrets
         run: |
           find . -name '*.vault.*' -delete
