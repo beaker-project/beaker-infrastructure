@@ -23,7 +23,7 @@
   hosts: beaker-project.osci.io
   tasks:
     - name: "Install NFS tools"
-      package:
+      ansible.builtin.package:
         name: nfs-utils
         state: present
 
@@ -50,7 +50,7 @@
     data_dir: "{{ inventory_dir }}/data/web"
   tasks:
     - name: "Create web storage"
-      include_role:
+      ansible.builtin.include_role:
         name: lvm_partition
       vars:
         vg: "{{ data_vg_name }}"
@@ -60,12 +60,12 @@
       tags: partitioning
 
     - name: "Create uploader's user"
-      user:
+      ansible.builtin.user:
         name: "{{ uploader_login }}"
         comment: "Website Uploader User"
 
     - name: "Setup permission for web storage"
-      file:
+      ansible.builtin.file:
         path: "/var/www/{{ website_domain }}"
         owner: "{{ uploader_login }}"
         group: "{{ uploader_login }}"
@@ -73,7 +73,7 @@
         setype: httpd_sys_content_t
 
     - name: "Install rsync for the website builder"
-      package:
+      ansible.builtin.package:
         name: rsync
         state: present
 
@@ -85,20 +85,20 @@
 
 
     - name: "Harden security for uploaders configuration"
-      file:
+      ansible.builtin.file:
         path: "~{{ uploader_login }}/.ssh/authorized_keys"
         owner: root
         mode: "0644"
 
     - name: "Harden security for uploaders configuration, .ssh directory"
-      file:
+      ansible.builtin.file:
         path: "~{{ uploader_login }}/.ssh/"
         owner: root
         mode: "0750"
         attr: i
 
     - name: "Install RPM Import script"
-      template:
+      ansible.builtin.template:
         src: "{{ data_dir }}/rpm_import.sh"
         dest: /usr/local/bin/
         owner: root
@@ -106,12 +106,12 @@
         mode: "0755"
 
     - name: "Install RPM Import script dependencies"
-      package:
+      ansible.builtin.package:
         name: createrepo_c
         state: present
 
     - name: "Create RPM Import script's user"
-      user:
+      ansible.builtin.user:
         name: "{{ rpmimport_login }}"
         comment: "Website RPM Import script User"
 
@@ -122,7 +122,7 @@
         user: "{{ rpmimport_login }}"
 
     - name: "Allow sudo for RPM Import script"
-      template:
+      ansible.builtin.template:
         src: "{{ data_dir }}/rpm_import.sudo"
         dest: /etc/sudoers.d/rpm_import
         owner: root
@@ -131,7 +131,7 @@
         validate: "visudo -cf %s"
 
     - name: "Create vhost for {{ website_domain }}"
-      include_role:
+      ansible.builtin.include_role:
         name: httpd
         tasks_from: vhost
       vars:
@@ -151,7 +151,7 @@
 
     - name: "Allow web index for {{ website_domain }}"
       # noqa no-tabs
-      copy:
+      ansible.builtin.copy:
         content: "<Location />\n\tOptions +Indexes\n</Location>"
         dest: "{{ _vhost_confdir }}/free_listing.conf"
         owner: root
@@ -167,7 +167,7 @@
       notify: restart httpd
 
     - name: "Create directory for YUM archive"
-      file:
+      ansible.builtin.file:
         path: "/var/www/{{ website_domain }}/yum-archive"
         state: directory
         owner: "{{ uploader_login }}"
@@ -176,7 +176,7 @@
         setype: httpd_sys_content_t
 
     - name: "Use NFS storage for YUM archive"
-      include_role:
+      ansible.builtin.include_role:
         name: data_movebind
       vars:
         src: "/var/www/{{ website_domain }}/yum-archive"
@@ -185,13 +185,13 @@
           - httpd
 
     - name: "Generate Artifacts Expiration Script"
-      template:
+      ansible.builtin.template:
         src: "{{ data_dir }}/artifacts_expire.sh"
         dest: /usr/local/sbin/
         mode: "0755"
 
     - name: "Add crontab for Artifacts Expiration"
-      cron:
+      ansible.builtin.cron:
         cron_file: artifacts-expiration
         name: "Artifacts expiration"
         user: root

@@ -15,9 +15,6 @@ skip_list:
   # a handler, this rule is not clever enough to understand
   - no-handler
   - meta-no-tags
-  # let's wait for a better collections resolution configuration
-  - fqcn[action-core]
-  - fqcn[action]
   - key-order[task]
   # TODO: would be safer to work on this
   #   (experienced conflicts when running chained plays in complex setups)

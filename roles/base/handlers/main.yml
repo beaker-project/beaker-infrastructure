@@ -1,6 +1,6 @@
 ---
 
 - name: Clean YUM Metadata
-  command: yum clean metadata
+  ansible.builtin.command: yum clean metadata
   changed_when: true
 
